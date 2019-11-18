@@ -1,0 +1,7 @@
+   w3m  https://www.collinsdictionary.com/zh/dictionary/english/$1 | sed -n '17,/COBUILD/p' >${1}.txt
+   less ${1}.txt
+   wget -O ${1}-sou https://www.collinsdictionary.com/zh/dictionary/english/$1
+   cat ${1}-sou| grep -E -o 'http[^"]+mp3' | sort | uniq >mp3uri
+   wget -P ${1}_mp3 -i mp3uri
+   rm ${1}-sou mp3uri
+   play-audio ${1}_mp3/*
