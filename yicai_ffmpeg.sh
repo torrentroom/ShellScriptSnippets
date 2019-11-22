@@ -12,20 +12,9 @@ then
 
 elif temp=$(grep -E -o '//[^"]+m3u8[^"]+' page)
 then
-	mkdir tsfolder; cd tsfolder
-	
 	videourl=$( echo $temp | sed -n '1p' | sed 's/^/http:/')
 	wget -O m3u8file $videourl
-	cat m3u8file | grep -E -o 'cbn.*' >ts_parts
-	num_ts=$(cat ts_parts| wc -l)
-	temp2=$(echo $videourl |grep -E -o 'http.*/live/')
-	cat ts_parts| sed "s@^@$temp2@" >suffix
-	seq -w $num_ts| sed 's@^@wget --user-agent="" -O @' | sed 's/$/.ts/' >prefix
-	paste prefix suffix >gotit
-	bash gotit
-	cat *.ts >  ../"${filename}.ts"
-	cd ..
-	rm -f tsfolder/ 
+	ffmpeg -i m3u8file "${filename}.ts"
 
 fi
 
